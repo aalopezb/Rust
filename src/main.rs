@@ -1,16 +1,13 @@
-use actix_web::{web, App, HttpServer, Responder};
-
-async fn hello_world() -> impl Responder {
-    "Hello World from Rust!"
-}
+use actix_web::{web, App, HttpServer};
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
+    let port = std::env::var("PORT").unwrap_or_else(|_| String::from("8080"));
     HttpServer::new(|| {
         App::new()
-            .route("/", web::get().to(hello_world))
+            .route("/", web::get().to(|| async { "Hello, world!" }))
     })
-    .bind("0.0.0.0:8080")?
+    .bind(format!("0.0.0.0:{}", port))?
     .run()
     .await
 }
